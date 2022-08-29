@@ -1,0 +1,18 @@
+{
+    "name": "nando_rocha/backend",
+    "autoload": {
+        "psr-4": {
+            "app\\": "app"
+        }
+    },
+    "authors": [
+        {
+            "name": "Fernando H Rocha",
+            "email": "fhrlobacz@gmail.com"
+        }
+    ],
+    "require": {
+        "firebase/php-jwt": "^6.3",
+        "vlucas/phpdotenv": "^5.4"
+    }
+}

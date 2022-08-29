@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Aboreto&display=swap" rel="stylesheet">
+    <title>Autenticação JWT</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <style>
+        html, body {
+            font-family: 'Aboreto', cursive;
+            background-color: #333;
+        }
+        input, button {
+            font-size: 20px;
+            padding: 10px;
+            margin: 2px;
+            border-radius: 10px;
+            border: solid #111 1px;
+            text-align: center;
+            display: block;
+        }
+        input:hover, button:hover {
+            cursor: pointer;
+        }
+        button {
+            color: white;
+        }
+        main {
+            display:flex;
+            gap: 20px 0;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            height:100vh
+        }
+        main >* {
+            width: 70%;
+        }
+        main form {
+            display: flex;
+            flex-direction: column;
+        }
+        #auth-options {
+            margin-top: 20px;
+            display: flex;
+            width: 100%;
+        }
+        #auth-options >* {
+            flex: 1;
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+        #btn-login {
+            background-color: royalblue;
+        }
+        .btn-auth {
+            width: 100%;
+            background-color: forestgreen;
+        }
+        #btn-register {
+            background-color: darkorchid;
+        }
+    </style>
+    <div>
+        <div id="logged"></div>
+    </div>
+    
+    <main>
+        <form id="form" action="POST">
+            <input type="text" name="login" value="fhrlobacz@gmail.com">
+            <input type="password" name="password" value="senha">
+            <div id="auth-options">
+                <button type="submit" id="btn-login">Entrar</button>
+                <button type="button" id="btn-register">Registrar</button>
+            </div>
+        </form>
+
+        <div>
+            <button id="btn-check-auth" class="btn-auth">Verificar Autenticação</button>
+        </div>
+    </main>
+    <script>
+        const form = document.querySelector("#form")
+        axios.defaults.baseURL = 'http://localhost:3000';
+        form.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            try{
+                const formData = new FormData(event.target);
+                const {data} = await axios.post('login.php', formData);
+                
+                sessionStorage.setItem('session', data);
+
+            } catch(error) {
+                console.log(error);
+            }
+        })
+        
+        const checkAuthButton = document.querySelector('#btn-check-auth');
+        checkAuthButton.addEventListener('click', async function(event) {
+            try{
+                const authSession = sessionStorage.getItem('session');
+                const {data} = await axios.get('auth.php', {
+                    headers: {
+                        'Authorization' : 'Bearer ' + authSession
+                    }
+                })
+                console.log(data)
+            } catch(error) {
+                console.log(error)
+            }
+        })
+
+        const btnRegister = document.querySelector('#btn-register');
+        btnRegister.addEventListener('click', async function(event) {
+            try{
+                const formData = new FormData(form);
+                const {data} = await axios.post('register.php', formData);
+
+                sessionStorage.setItem('session', data);
+            } catch(error) {
+                console.log(error);
+            }
+        })
+    </script>
+</body>
+</html>
